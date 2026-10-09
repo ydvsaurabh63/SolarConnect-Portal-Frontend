@@ -1,0 +1,140 @@
+/* ==========================================================================
+   SolarConnect - Base Global Styles & Design Tokens
+   ========================================================================== */
+
+:root {
+  --font-heading: "Outfit", sans-serif;
+  --font-body: "Plus Jakarta Sans", sans-serif;
+  --primary: #10b981;
+  --primary-hover: #059669;
+  --primary-light: rgba(16, 185, 129, 0.15);
+  --primary-glow: rgba(16, 185, 129, 0.35);
+  --solar-gold: #f59e0b;
+  --solar-amber: #fbbf24;
+  --solar-glow: rgba(245, 158, 11, 0.35);
+  --agent-color: #3b82f6;
+  --agent-light: rgba(59, 130, 246, 0.15);
+  --bg-dark: #050914;
+  --bg-dark-card: #0c1427;
+  --bg-dark-card-hover: #131e38;
+  --bg-page: #050914;
+  --bg-light: #0c1427;
+  --bg-white: #0c1427;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-on-dark: #f8fafc;
+  --text-muted-dark: #94a3b8;
+  --border-light: rgba(255, 255, 255, 0.08);
+  --border-dark: rgba(255, 255, 255, 0.12);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 30px var(--primary-glow);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  background-color: #050914;
+  line-height: 1.5;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  position: relative;
+}
+
+#root, .solar-app {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+input,
+select,
+textarea {
+  outline: none;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Micro-animations */
+@keyframes pulseSubtle {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: 0.35s forwards fadeIn;
+}
