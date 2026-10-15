@@ -9,13 +9,22 @@ export default function FieldRegistrationModal({
   isOpen,
   onClose,
   currentUser,
+  executiveData,
   onSuccessSubmit,
+  onSuccess,
   onOpenFieldGuide,
   onOpenAuthModal,
   lang = 'hi',
 }) {
-  // Step 1 mode selection: null = show options first, 'FIELD_EXECUTIVE' | 'SELF_APPLICANT' = open form
-  const [selectedMode, setSelectedMode] = useState(null);
+  // If currentUser is agent/executive or executiveData is present, jump directly to survey form
+  const isAgentMode = Boolean(executiveData || currentUser?.role === 'agent' || currentUser?.role === 'executive');
+  const [selectedMode, setSelectedMode] = useState(isAgentMode ? 'FIELD_EXECUTIVE' : null);
+
+  React.useEffect(() => {
+    if (isAgentMode) {
+      setSelectedMode('FIELD_EXECUTIVE');
+    }
+  }, [isAgentMode, isOpen]);
 
   if (!isOpen) return null;
 
@@ -25,8 +34,21 @@ export default function FieldRegistrationModal({
     onClose();
   };
 
-  // If user is not signed in, create a direct applicant session so form is fully usable
-  const effectiveUser = currentUser || {
+  // Build effectiveUser with full lineage
+  const effectiveUser = currentUser || (executiveData ? {
+    fullName: executiveData.name || 'Field Agent',
+    email: 'agent@solar.com',
+    role: 'agent',
+    executiveId: executiveData.id || executiveData.agentCode || 'AGT-101-01-01',
+    code: executiveData.id || executiveData.agentCode || 'AGT-101-01-01',
+    _id: executiveData.agentId || '',
+    distributorId: executiveData.distributorId || '',
+    distributorName: executiveData.distributorName || '',
+    distributorCode: executiveData.distributorCode || '',
+    adminId: executiveData.adminId || '',
+    adminName: executiveData.adminName || '',
+    adminCode: executiveData.adminCode || '',
+  } : {
     fullName: selectedMode === 'FIELD_EXECUTIVE' 
       ? (lang === 'hi' ? 'फील्ड एग्जीक्यूटिव' : 'Field Executive')
       : (lang === 'hi' ? 'सीधा आवेदक (Direct Applicant)' : 'Direct Applicant'),
@@ -34,14 +56,18 @@ export default function FieldRegistrationModal({
       ? 'executive@solarconnect.in' 
       : 'direct.applicant@solarconnect.in',
     role: selectedMode === 'FIELD_EXECUTIVE' ? 'executive' : 'applicant',
-    executiveId: selectedMode === 'FIELD_EXECUTIVE' ? 'EX-FIELD' : 'ONLINE-APPLICANT',
-  };
+    executiveId: selectedMode === 'FIELD_EXECUTIVE' ? 'AGT-101-01-01' : 'ONLINE-APPLICANT',
+    code: selectedMode === 'FIELD_EXECUTIVE' ? 'AGT-101-01-01' : 'ONLINE-APPLICANT',
+  });
 
   const handleSuccess = (registration) => {
     setSelectedMode(null);
     onClose();
     if (onSuccessSubmit) {
       onSuccessSubmit(registration);
+    }
+    if (onSuccess) {
+      onSuccess(registration);
     }
   };
 
@@ -54,7 +80,7 @@ export default function FieldRegistrationModal({
         {/* Modal Top Floating Header */}
         <div className="field-modal-top-bar compact-top-bar">
           <div className="fmt-left">
-            {selectedMode && (
+            {selectedMode && !isAgentMode && (
               <button
                 type="button"
                 className="field-modal-back-btn"
@@ -72,9 +98,7 @@ export default function FieldRegistrationModal({
 
             <div>
               <h3 className="fmt-title compact-title">
-                {selectedMode 
-                  ? (lang === 'hi' ? 'फील्ड रजिस्ट्रेशन फॉर्म' : 'Field Registration Form')
-                  : (lang === 'hi' ? 'रजिस्ट्रेशन प्रकार चुनें' : 'Select Registration Mode')}
+                {lang === 'hi' ? 'सोलर रूफटॉप सर्वे फॉर्म' : 'Solar Rooftop Survey Form'}
               </h3>
               <span className="fmt-sub compact-sub">
                 PM Surya Ghar: Muft Bijli Yojana
@@ -83,9 +107,9 @@ export default function FieldRegistrationModal({
           </div>
 
           <div className="fmt-right">
-            {selectedMode && (
+            {selectedMode && !isAgentMode && (
               <span className="fmt-active-mode-pill compact-mode-pill">
-                {selectedMode === 'FIELD_EXECUTIVE' ? 'Executive' : 'Self Applicant'}
+                {selectedMode === 'FIELD_EXECUTIVE' ? 'Agent' : 'Self Applicant'}
               </span>
             )}
 

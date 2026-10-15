@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Sun, Globe, User, LogOut, Menu, X, Shield, 
-  ArrowRight, Phone, Sparkles, FileText, CheckCircle2 
+  ArrowRight, Phone
 } from 'lucide-react';
 
 export default function Navbar({
@@ -9,13 +10,21 @@ export default function Navbar({
   onToggleLang,
   t,
   currentUser,
-  onOpenLogin,
   onLogout,
   onOpenTrackModal,
   onRegisterClick,
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const n = t.nav;
+  const n = t?.nav || {
+    home: 'Home',
+    whySolar: 'Why Solar',
+    govtScheme: 'Govt Scheme',
+    process: 'Process',
+    contact: 'Contact',
+    trackStatus: 'Track Status',
+    registerNow: 'Apply Now',
+    signIn: 'Customer Login',
+  };
 
   const scrollToSection = (id) => {
     setMobileMenuOpen(false);
@@ -27,7 +36,7 @@ export default function Navbar({
 
   return (
     <header className="navbar-ultra">
-      {/* Top micro-announcement ticker (optional, clean) */}
+      {/* Top micro-announcement ticker */}
       <div className="navbar-top-bar">
         <div className="section-container top-bar-flex">
           <div className="top-bar-left">
@@ -50,23 +59,24 @@ export default function Navbar({
       <div className="nav-main-container">
         <div className="nav-flex">
           {/* Brand Logo */}
-          <div className="nav-brand-wrap" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <Link to="/" className="nav-brand-wrap" style={{ textDecoration: 'none' }}>
             <img 
               src="/solarconnect-logo-dark.png" 
               alt="SolarConnect - Clean Energy • Brighter Tomorrow" 
               className="navbar-brand-logo-img" 
             />
-          </div>
+          </Link>
 
           {/* Desktop Navigation Links */}
           <nav className="desktop-nav-links">
-            <button 
-              type="button" 
+            <Link 
+              to="/" 
               className="nav-link-btn"
+              style={{ textDecoration: 'none' }}
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               {n.home}
-            </button>
+            </Link>
 
             <button 
               type="button" 
@@ -110,9 +120,9 @@ export default function Navbar({
             </button>
           </nav>
 
-          {/* Right Controls: Language Switcher + Register Now CTA + Auth */}
+          {/* Right Controls: Language Switcher + Register Now CTA + Customer Auth */}
           <div className="desktop-actions-wrap">
-            {/* Language Switcher Button (English / Hindi Mode) */}
+            {/* Language Switcher */}
             <button 
               type="button" 
               className="lang-switcher-pill"
@@ -135,34 +145,58 @@ export default function Navbar({
               <ArrowRight size={16} />
             </button>
 
-            {/* Auth / Profile */}
+            {/* Auth / Profile Link */}
             {currentUser ? (
-              <div className="nav-user-pill">
-                <span className="user-initial">{currentUser.fullName?.[0] || 'U'}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Link
+                  to={currentUser.role === 'user' ? '/user/dashboard' : `/${currentUser.role}/dashboard`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    background: '#f59e0b20',
+                    color: '#f59e0b',
+                    border: '1px solid #f59e0b50',
+                    padding: '8px 14px',
+                    borderRadius: '8px',
+                    textDecoration: 'none',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                  }}
+                >
+                  <User size={15} /> My Portal ({currentUser.fullName?.split(' ')[0]})
+                </Link>
                 <button 
                   type="button" 
                   className="user-logout-btn" 
                   onClick={onLogout}
                   title="Sign Out"
+                  style={{
+                    background: 'rgba(239, 68, 68, 0.15)',
+                    color: '#f87171',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    padding: '8px 10px',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                  }}
                 >
                   <LogOut size={15} />
                 </button>
               </div>
             ) : (
-              <button 
-                type="button" 
+              <Link 
+                to="/user/login"
                 className="nav-signin-link"
-                onClick={onOpenLogin}
+                style={{ textDecoration: 'none' }}
               >
                 <User size={15} />
-                <span>{n.signIn}</span>
-              </button>
+                <span>Customer Login</span>
+              </Link>
             )}
           </div>
 
           {/* Mobile Hamburger Button */}
           <div className="mobile-toggle-wrap">
-            {/* Quick Lang Switch for Mobile */}
             <button 
               type="button" 
               className="mobile-lang-btn"
@@ -186,13 +220,14 @@ export default function Navbar({
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
         <div className="mobile-drawer animate-fade-in">
-          <button 
-            type="button" 
+          <Link 
+            to="/" 
             className="mobile-drawer-link"
+            style={{ textDecoration: 'none' }}
             onClick={() => { setMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
           >
             {n.home}
-          </button>
+          </Link>
 
           <button 
             type="button" 
@@ -221,14 +256,6 @@ export default function Navbar({
           <button 
             type="button" 
             className="mobile-drawer-link"
-            onClick={() => scrollToSection('connection-register')}
-          >
-            {n.contact}
-          </button>
-
-          <button 
-            type="button" 
-            className="mobile-drawer-link"
             onClick={() => { setMobileMenuOpen(false); onOpenTrackModal(); }}
           >
             <Shield size={16} />
@@ -252,17 +279,18 @@ export default function Navbar({
                 onClick={() => { setMobileMenuOpen(false); onLogout(); }}
               >
                 <LogOut size={16} />
-                <span>Sign Out ({currentUser.fullName || currentUser.email})</span>
+                <span>Sign Out ({currentUser.fullName})</span>
               </button>
             ) : (
-              <button 
-                type="button" 
+              <Link 
+                to="/user/login"
                 className="mobile-signin-btn"
-                onClick={() => { setMobileMenuOpen(false); onOpenLogin(); }}
+                style={{ textDecoration: 'none', textAlign: 'center' }}
+                onClick={() => setMobileMenuOpen(false)}
               >
                 <User size={16} />
-                <span>{n.signIn}</span>
-              </button>
+                <span>Customer Login</span>
+              </Link>
             )}
           </div>
         </div>
