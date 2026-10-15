@@ -9,7 +9,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, initialTab
     email: '',
     mobile: '',
     password: '',
-    role: 'executive',
+    role: 'client',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -227,9 +227,8 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, initialTab
                 value={formData.role}
                 onChange={handleChange}
               >
+                <option value="client">Homeowner / Applicant (Client)</option>
                 <option value="executive">Field Executive (Rooftop Surveyor)</option>
-                <option value="user">Candidate / Homeowner</option>
-                <option value="admin">Office Verification Officer (Admin)</option>
               </select>
             </div>
 

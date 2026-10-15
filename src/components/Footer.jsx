@@ -63,7 +63,7 @@ export default function Footer({ lang = 'hi', t }) {
           </p>
           <div className="footer-admin-link-wrap">
             <a 
-              href="http://localhost:5175" 
+              href={import.meta.env.VITE_ADMIN_PANEL_URL || 'http://localhost:5174'} 
               target="_blank" 
               rel="noopener noreferrer" 
               className="footer-admin-badge"

@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:4000/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://solarconnect-portal-backend.onrender.com/api';
 
 export const api = {
   // Check backend connection
